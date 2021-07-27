@@ -6,3 +6,8 @@ CANDIDATES = 10
 AGENTS = 5
 
 
+'''
+Checklist
+    [ ] Tie all templates together in the driver
+    [ ] Implement a commandline interface
+'''
