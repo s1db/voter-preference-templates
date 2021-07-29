@@ -34,7 +34,7 @@ def biased_clustered_profile(size_of_cluster, no_of_clusters, distribution, shuf
         result = np.concatenate((result, tiled_preference), axis=1)
     return result[:,1:]
 
-# Driver Code
+# Driver Code for testing
 if __name__ == "__main__":
     size_of_cluster = 3
     no_of_clusters = 3
