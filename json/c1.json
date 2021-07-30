@@ -1,8 +1,8 @@
 {
     "json": "json/c1.json", 
-    "frequency": false, 
+    "frequency": true, 
     "copeland_score": true, 
-    "minizinc_data": false, 
+    "minizinc_data": true, 
     "fuzz": 5, 
     "random": false, 
     "distribution": [1, 1, 1, 1], 

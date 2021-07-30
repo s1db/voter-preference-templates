@@ -9,7 +9,7 @@ from helpers.iterative_copeland.iterative_copeland import pairwiseScoreCalcListF
 
 import argparse
 import json
-import sys
+
 
 parser = argparse.ArgumentParser()
 # Auxiliary arguments
@@ -92,27 +92,42 @@ if args.copeland_score:
     score_list = pairwiseScoreCalcListFull(preference_profile, preference_profile.shape[0],preference_profile.shape[1])
     copeland_score = copelandScoreFull(score_list, preference_profile.shape[0],preference_profile.shape[1])
     print(copeland_score)
+
+if args.frequency:
+    borda_count_frequency(preference_profile, True)
+if args.minizinc_data:
+    dzn_lines = []
+    dzn_lines.append("CANDIDATES = "+str(preference_profile.shape[0])+";\n")
+    dzn_lines.append("AGENTS = "+str(preference_profile.shape[1])+";\n")
+    dzn_pref_profile = str(list(map(int, preference_profile.flatten())))
+    dzn_pref_profile = 'rankings = array2d(CANDIDATES, AGENTS,'+dzn_pref_profile+');\n'
+    dzn_lines.append(dzn_pref_profile)
+    if args.copeland_score:
+        dzn_lines.append("copeland = "+str(copeland_score)+"\n")
+    with open('profile.dzn', 'w') as f:
+        f.writelines(dzn_lines)
+
 '''
 Notes
     Arguments:
         type:
-            [x] --unipolar  -u  -- no_of_candidates
-            [x] --bipolar   -b  -- no_of_candidates
-            [x] --clustered -c  -- no_of_clusters, size_of_clusters
-            [x] --simple    -s  -- no_of_candidates
-                [x] --distribution  -d common in all.
-                [x] --fuzzing_level -f common in all.
-                [x] --random        -r only in clustered and simple, has no impact on uni and bi. 
+            --unipolar  -u  -- no_of_candidates
+            --bipolar   -b  -- no_of_candidates
+            --clustered -c  -- no_of_clusters, size_of_clusters
+            --simple    -s  -- no_of_candidates
+                --distribution  -d common in all.
+                --fuzzing_level -f common in all.
+                --random        -r only in clustered and simple, has no impact on uni and bi. 
         auxilary commands:
-            [ ] --json              -j -- json file path
+            [x] --json              -j -- json file path
             [.] --borda-frequency   -bf
-            [ ] --copeland          -c
-            [ ] --minizinc          -mz
+            [x] --copeland          -c
+            [x] --minizinc          -mz
 Checklist
     [x] Simple template
     [x] JSON
-    [ ] Copeland
-    [ ] Minizinc
+    [x] Copeland
+    [x] Minizinc
     [ ] Borda-frequency
-    [ ] More JSON tests
+    [x] More JSON tests
 '''

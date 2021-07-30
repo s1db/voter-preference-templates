@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 def borda_count_frequency(preference_profile, show_plot):
     rows, cols = preference_profile.shape[0], preference_profile.shape[1]
-    print(cols)
     counts = dict.fromkeys(range(0, cols), 0)
     for x in range(0, rows):
         for y in range(0, cols):

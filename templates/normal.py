@@ -1,7 +1,6 @@
 from .lex_ordering_permute import nPermute
 # import numpy as np 
 import random
-import math
 import numpy as np
 # driver program to generate random instances from the permutation function.
 # this is to be followed by a random weight generating function.
