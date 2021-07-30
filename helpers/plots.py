@@ -1,6 +1,6 @@
 # Boarda count plots
 import matplotlib.pyplot as plt
-from bipolar_bias import bipolar
+# from ..bipolar_bias import bipolar
 
 def borda_count_frequency(preference_profile, show_plot):
     rows, cols = preference_profile.shape[0], preference_profile.shape[1]

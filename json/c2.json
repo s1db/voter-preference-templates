@@ -1,0 +1,6 @@
+{
+    "minizinc_data": false, 
+    "fuzz": 5, 
+    "unipolar": 5,
+    "distribution": [10] 
+}

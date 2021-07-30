@@ -1,5 +1,4 @@
 import numpy as np
-from fuzzing import fuzzing
 
 def bipolar(candidates, left, right):
     left_profile = np.arange(0, candidates).reshape(candidates, 1)
@@ -13,4 +12,3 @@ def bipolar(candidates, left, right):
 
 if "__main__" == __name__:
     print(bipolar(10, 5, 0.1))
-    print(fuzzing(bipolar(10, 5, 0.5), 1))

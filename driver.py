@@ -1,14 +1,19 @@
-from clustered import biased_clustered_profile
-from bipolar_bias import bipolar
-from unipolar_bias import unipolar
-from fuzzing import fuzzing
+from templates.clustered import biased_clustered_profile
+from templates.bipolar_bias import bipolar
+from templates.unipolar_bias import unipolar
+from templates.normal import normal_pref_profile
+
+from helpers.fuzzing import fuzzing
+from helpers.plots import borda_count_frequency
+from helpers.iterative_copeland.iterative_copeland import pairwiseScoreCalcListFull, copelandScoreFull
+
 import argparse
+import json
 import sys
 
 parser = argparse.ArgumentParser()
 # Auxiliary arguments
-parser.add_argument('--json', '-j', nargs='?', type=argparse.FileType('r'),
-                    default=sys.stdin, help='Read json file as input.')
+parser.add_argument('--json', '-j', nargs='?', help='Read json file as input.')
 
 parser.add_argument('--frequency', '-bf',
                     action='store_true', help='Plot borda frequency of profile.')
@@ -39,6 +44,13 @@ parser.add_argument('--normal', '-n', type=int,
                     help='A generic voting pattern. Specify the number of candidates.')
 
 args = parser.parse_args()
+preference_profile = None
+
+if args.json:
+    with open(args.json, 'rt') as f:
+        t_args = argparse.Namespace()
+        t_args.__dict__.update(json.load(f))
+        args = parser.parse_args(namespace=t_args)
 
 if not (args.unipolar or args.bipolar or args.cluster or args.normal):
     parser.error(
@@ -46,6 +58,11 @@ if not (args.unipolar or args.bipolar or args.cluster or args.normal):
 
 if not args.distribution:
     parser.error('Specify distribution argument. E.g: -d 1 2 3 4')
+
+if [args.unipolar, args.bipolar, args.cluster, args.normal].count(None) < 3:
+    parser.error('Specify exactly one of --unipolar, --bipolar, --cluster and --normal')
+
+print(args)
 
 # Imports added later for better performance
 if args.unipolar:
@@ -64,14 +81,17 @@ elif args.cluster:
     preference_profile = biased_clustered_profile(
         args.cluster[0], args.cluster[1], args.distribution, False, args.random)
 elif args.normal:
-    None
+    preference_profile = normal_pref_profile(args.normal, args.distribution, args.random)
 
 if args.fuzz:
     preference_profile = fuzzing(preference_profile, args.fuzz)
 
 print(preference_profile)
 
-
+if args.copeland_score:
+    score_list = pairwiseScoreCalcListFull(preference_profile, preference_profile.shape[0],preference_profile.shape[1])
+    copeland_score = copelandScoreFull(score_list, preference_profile.shape[0],preference_profile.shape[1])
+    print(copeland_score)
 '''
 Notes
     Arguments:
@@ -79,22 +99,20 @@ Notes
             [x] --unipolar  -u  -- no_of_candidates
             [x] --bipolar   -b  -- no_of_candidates
             [x] --clustered -c  -- no_of_clusters, size_of_clusters
-            [ ] --simple    -s  -- no_of_candidates
-                [ ] --distribution  -d common in all.
-                [ ] --fuzzing_level -f common in all.
-                [ ] --random        -r only in clustered and simple, has no impact on uni and bi. 
+            [x] --simple    -s  -- no_of_candidates
+                [x] --distribution  -d common in all.
+                [x] --fuzzing_level -f common in all.
+                [x] --random        -r only in clustered and simple, has no impact on uni and bi. 
         auxilary commands:
             [ ] --json              -j -- json file path
             [.] --borda-frequency   -bf
             [ ] --copeland          -c
             [ ] --minizinc          -mz
 Checklist
-    [ ] Simple template
+    [x] Simple template
+    [x] JSON
     [ ] Copeland
     [ ] Minizinc
-    [ ] JSON
     [ ] Borda-frequency
-    [ ] Tie all templates together in the driver
-    [ ] Implement a commandline interface
-    [ ] Borda count frequencies
+    [ ] More JSON tests
 '''

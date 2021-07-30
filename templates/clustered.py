@@ -1,7 +1,6 @@
 import random
-from lex_ordering_permute import nPermute
+from .lex_ordering_permute import nPermute
 import numpy as np
-from fuzzing import fuzzing
 
 def clustering(size_of_cluster, no_of_clusters, shuffle):
     new_arr = []
@@ -39,7 +38,7 @@ if __name__ == "__main__":
     size_of_cluster = 3
     no_of_clusters = 3
     pref_profile = biased_clustered_profile(size_of_cluster, no_of_clusters, [6,3,1], False, True)    
-    print(fuzzing(pref_profile, 3))
+    print(pref_profile)
 
 
 # A cluster preference template like 60% have the bias to a certain cluster.
